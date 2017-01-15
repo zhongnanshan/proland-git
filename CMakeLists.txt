@@ -2,22 +2,61 @@ PROJECT( Proland40 )
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
-# 设置外部引用库
+SET( MY_COMPILE_OPTIONS "" )
 
-FIND_PATH( PThreadInclude pthread.h)
-FIND_LIBRARY( PThreadLib pthreadVCE2.lib)
+# 设置外部依赖库
+SET( PTHREAD_ROOT "${PROJECT_BINARY_DIR}/../ork3rd/pthreads-w32-2-8-0-release/Pre-built.2" )
+IF( EXISTS ${PTHREAD_ROOT} )
+	SET( PThreadInclude ${PTHREAD_ROOT}/include )
+	SET( PThreadLib ${PTHREAD_ROOT}/lib/pthreadVCE2.lib )
+	MESSAGE( "Pthread Finded!" )
+ELSE()
+	FIND_PATH( PThreadInclude pthread.h)
+	FIND_LIBRARY( PThreadLib pthreadVCE2.lib)
+	MESSAGE( "Pthread need configure!" )
+ENDIF()
 
 MESSAGE( ${PThreadInclude} )
 MESSAGE( ${PThreadLib} )
 
-FIND_PATH( LibTiffInclude tiff.h)
-FIND_LIBRARY( LibTiffLib libtiff.lib)
+SET( GLFW_ROOT "${PROJECT_BINARY_DIR}/../ork3rd/glfw-3.2.1.bin.WIN32" )
+IF( EXISTS ${GLFW_ROOT} )
+	SET( GLFWInclude ${GLFW_ROOT}/include )
+	SET( GLFWLib ${GLFW_ROOT}/lib-vc2015/glfw3dll.lib )
+	MESSAGE( "GLFW Finded!" )
+ELSE()
+	FIND_PATH( GLFWInclude GLFW/glfw3.h)
+	FIND_LIBRARY( GLFWLib glfw3dll.lib)
+	MESSAGE( "GLFW need configure!" )
+ENDIF()
+	
+MESSAGE( ${GLFWInclude} )
+MESSAGE( ${GLFWLib} )
+
+SET( LIBTIFF_ROOT "${PROJECT_BINARY_DIR}/../proland3rd/libtiff" )
+IF( EXISTS ${LIBTIFF_ROOT} )
+	SET( LibTiffInclude ${LIBTIFF_ROOT}/include )
+	SET( LibTiffLib ${LIBTIFF_ROOT}/lib/libtiff.lib )
+	MESSAGE( "LibTiff Finded!" )
+ELSE()
+	FIND_PATH( LibTiffInclude tiff.h)
+	FIND_LIBRARY( LibTiffLib libtiff.lib)
+	MESSAGE( "LibTiff need configure!" )
+ENDIF()
 
 MESSAGE( ${LibTiffInclude} )
 MESSAGE( ${LibTiffLib} )
 
-FIND_PATH( AntTweakBarInclude AntTweakBar.h)
-FIND_LIBRARY( AntTweakBarLib AntTweakBar.lib)
+SET( ANTTWEAKBAR_ROOT "${PROJECT_BINARY_DIR}/../proland3rd/AntTweakBar" )
+IF( EXISTS ${ANTTWEAKBAR_ROOT} )
+	SET( AntTweakBarInclude ${ANTTWEAKBAR_ROOT}/include )
+	SET( AntTweakBarLib ${ANTTWEAKBAR_ROOT}/lib/AntTweakBar.lib )
+	MESSAGE( "AntTreakBar Finded!" )
+ELSE()
+	FIND_PATH( AntTweakBarInclude AntTweakBar.h)
+	FIND_LIBRARY( AntTweakBarLib AntTweakBar.lib)
+	MESSAGE( "AntTreakBar need configure!" )
+ENDIF()
 
 MESSAGE( ${AntTweakBarInclude} )
 MESSAGE( ${AntTweakBarLib} )
@@ -28,14 +67,45 @@ FIND_LIBRARY( Ork3Lib Ork31.lib)
 MESSAGE( ${Ork3Include} )
 MESSAGE( ${Ork3Lib} )
 
-FIND_PATH( GLEWInclude GL/glew.h)
-FIND_LIBRARY( GLEWLib glew32.lib)
+SET( GLEW_ROOT "${PROJECT_BINARY_DIR}/../ork3rd/glew-1.5.6" )
+IF( EXISTS ${GLEW_ROOT} )
+	SET( GLEWInclude ${GLEW_ROOT}/include )
+	SET( GLEWLib ${GLEW_ROOT}/lib/glew32.lib )
+	MESSAGE( "GLEW Finded!" )
+ELSE()
+	FIND_PATH( GLEWInclude GL/glew.h)
+	FIND_LIBRARY( GLEWLib glew32.lib)
+	MESSAGE( "GLEW need configure!" )
+ENDIF()
 
 MESSAGE( ${GLEWInclude} )
 MESSAGE( ${GLEWLib} )
 
-FIND_PATH( GLUTInclude GL/glut.h)
-FIND_LIBRARY( GLUTLib glut32.lib)
+OPTION( B_USE_FREEGLUT "weather use freeglut or not?" ON )
+IF( B_USE_FREEGLUT )
+	SET( GLUT_ROOT "${PROJECT_BINARY_DIR}/../ork3rd/freeglut" )
+	IF( EXISTS ${GLUT_ROOT} )
+		SET( GLUTInclude ${GLUT_ROOT}/include )
+		SET( GLUTLib ${GLUT_ROOT}/lib/freeglut.lib )
+		MESSAGE( "GLUT Finded!" )
+	ELSE()
+		FIND_PATH( GLUTInclude GL/glut.h)
+		FIND_LIBRARY( GLUTLib freeglut.lib)
+		MESSAGE( "GLUT need configure!" )
+	ENDIF()
+	SET( MY_COMPILE_OPTIONS "-DUSEFREEGLUT" )
+ELSE()
+	SET( GLUT_ROOT "${PROJECT_BINARY_DIR}/../ork3rd/glut-3.7.6-bin" )
+	IF( EXISTS ${GLUT_ROOT} )
+		SET( GLUTInclude ${GLUT_ROOT} )
+		SET( GLUTLib ${GLUT_ROOT}/glut32.lib )
+		MESSAGE( "GLUT Finded!" )
+	ELSE()
+		FIND_PATH( GLUTInclude GL/glut.h)
+		FIND_LIBRARY( GLUTLib glut32.lib)
+		MESSAGE( "GLUT need configure!" )
+	ENDIF()
+ENDIF()
 
 MESSAGE( ${GLUTInclude} )
 MESSAGE( ${GLUTLib} )
@@ -49,6 +119,7 @@ ADD_DEFINITIONS(
 	-DHAVE_STRUCT_TIMESPEC
 	-D_CRT_SECURE_NO_WARNINGS
 	-DORK_API=
+	${MY_COMPILE_OPTIONS}
 	)
 
 INCLUDE_DIRECTORIES(
@@ -64,6 +135,7 @@ INCLUDE_DIRECTORIES(
 	${Ork3Include}/libraries
 	${PThreadInclude}
 	${AntTweakBarInclude}
+	${GLEWInclude}
 	)
 
 SET( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin )
@@ -528,7 +600,7 @@ TARGET_LINK_LIBRARIES( proland-river-s
 	glu32.lib
 	)
 
-TARGET_INCLUDE_DIRECTORIES( proland-river-s PRIVATE ${GLEWInclude} )
+#TARGET_INCLUDE_DIRECTORIES( proland-river-s PRIVATE ${GLEWInclude} )
 
 IF( MSVC )
 	TARGET_COMPILE_OPTIONS( proland-river-s PRIVATE "-DPROLAND_API=" )
