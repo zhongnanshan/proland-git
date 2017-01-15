@@ -1,5 +1,5 @@
 
-ADD_EXECUTABLE( core-hello HelloWorld.cpp )
+ADD_EXECUTABLE( core-hello HelloWorld.cpp MyStaticRef.cpp )
 
 TARGET_LINK_LIBRARIES( core-hello 
 	proland-core-s
@@ -20,6 +20,6 @@ TARGET_LINK_LIBRARIES( core-hello
 	)
 
 IF( MSVC )
-	TARGET_COMPILE_OPTIONS( core-hello PRIVATE "-DPROLAND_API=" )
+	TARGET_COMPILE_OPTIONS( core-hello PRIVATE "-DPROLAND_API=" "-DUSE_MY_ORK_STATIC_REF" "-DUSE_MY_PROLAND_CORE_STATIC_REF" )
 	TARGET_COMPILE_OPTIONS( core-hello PRIVATE /wd"4244" /wd"4002" /wd"4305" )
 ENDIF( MSVC )
