@@ -661,10 +661,10 @@ ADD_SUBDIRECTORY( core/examples/helloworld )
 #ADD_SUBDIRECTORY( demo )
 #ADD_SUBDIRECTORY( edit )
 #ADD_SUBDIRECTORY( forest )
-#ADD_SUBDIRECTORY( graph )
+ADD_SUBDIRECTORY( graph/examples/graph1 )
 #ADD_SUBDIRECTORY( ocean )
 #ADD_SUBDIRECTORY( river )
-#ADD_SUBDIRECTORY( terrain )
+ADD_SUBDIRECTORY( terrain/examples/exercise1 )
 
 INSTALL( FILES 
 	${PThreadDll} 

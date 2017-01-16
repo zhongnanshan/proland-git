@@ -1,21 +1,22 @@
 
-SET( TARGET_NAME atmo )
+SET( TARGET_NAME graph1 )
 SET( TARGET_SRCS HelloWorld.cpp MyStaticRef.cpp )
 SET( TARGET_RES 
-	atmosphereShader.glhl
-	atmosphereShader.glsl
-	globalsShader.glsl
-	skyShader.glsl
+	helloworld.xml 
+	quad.mesh 
+	terrainShader.glsl
+	blendShader.glsl
+	normalShader.glsl
+	roadLayerElevationShader.glsl
+	roadLayerOrthoShader.glsl
 	textShader.glsl
-	square.mesh
-	sunglare.png
+	upsampleShader.glsl
+	roads.graph
 	text.png
-	inscatter.raw
-	irradiance.raw
-	transmittance.raw
-	helloworld.xml
+	RGB.dat
+	DEM.dat
 	)
-SET( TARGET_DIR atmo )
+SET( TARGET_DIR graph )
 
 ADD_EXECUTABLE( ${TARGET_NAME} ${TARGET_SRCS})
 
@@ -42,6 +43,9 @@ IF( MSVC )
 	"-DPROLAND_API=" 
 	"-DUSE_MY_ORK_STATIC_REF" 
 	"-DUSE_MY_PROLAND_CORE_STATIC_REF" 
+	"-DUSE_MY_PROLAND_GRAPH_STATIC_REF"
+	"-DUSE_MY_PROLAND_TERRAIN_STATIC_REF"
+	"-DUSE_MY_PROLAND_OCEAN_STATIC_REF"
 	)
 	TARGET_COMPILE_OPTIONS( ${TARGET_NAME} PRIVATE /wd"4244" /wd"4002" /wd"4305" )
 ENDIF( MSVC )

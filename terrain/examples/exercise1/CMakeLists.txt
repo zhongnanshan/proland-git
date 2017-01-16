@@ -1,21 +1,24 @@
 
-SET( TARGET_NAME atmo )
+SET( TARGET_NAME terrain-exercise1 )
 SET( TARGET_SRCS HelloWorld.cpp MyStaticRef.cpp )
 SET( TARGET_RES 
+	helloworld.xml 
+	quad.mesh 
+	square.mesh
 	atmosphereShader.glhl
 	atmosphereShader.glsl
 	globalsShader.glsl
+	normalShader.glsl
+	oceanShader.glsl
 	skyShader.glsl
+	terrainShader.glsl
 	textShader.glsl
-	square.mesh
-	sunglare.png
+	upsampleOrthoShader.glsl
+	upsampleShader.glsl
 	text.png
-	inscatter.raw
-	irradiance.raw
-	transmittance.raw
-	helloworld.xml
+	sunglare.png
 	)
-SET( TARGET_DIR atmo )
+SET( TARGET_DIR terrain-exercise1 )
 
 ADD_EXECUTABLE( ${TARGET_NAME} ${TARGET_SRCS})
 
@@ -42,6 +45,9 @@ IF( MSVC )
 	"-DPROLAND_API=" 
 	"-DUSE_MY_ORK_STATIC_REF" 
 	"-DUSE_MY_PROLAND_CORE_STATIC_REF" 
+	"-DUSE_MY_PROLAND_GRAPH_STATIC_REF"
+	"-DUSE_MY_PROLAND_TERRAIN_STATIC_REF"
+	"-DUSE_MY_PROLAND_OCEAN_STATIC_REF"
 	)
 	TARGET_COMPILE_OPTIONS( ${TARGET_NAME} PRIVATE /wd"4244" /wd"4002" /wd"4305" )
 ENDIF( MSVC )

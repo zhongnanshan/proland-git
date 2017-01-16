@@ -14,11 +14,11 @@ TARGET_LINK_LIBRARIES( ${TARGET_NAME}
 	proland-edit-s
 	proland-forest-s
 	proland-ocean-s
-#	${LibTiffLib}
+	${LibTiffLib}
 	${Ork3Lib}
 	${GLUTLib}
-#	${AntTweakBarLib} 
-#	${GLEWLib}
+	${AntTweakBarLib} 
+	${GLEWLib}
 	${PThreadLib}
 	opengl32.lib
 	glu32.lib
