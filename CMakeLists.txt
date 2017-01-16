@@ -16,6 +16,8 @@ ELSE()
 	MESSAGE( "Pthread need configure!" )
 ENDIF()
 
+SET( PThreadDll ${PTHREAD_ROOT}/lib/pthreadVCE2.dll )
+
 MESSAGE( ${PThreadInclude} )
 MESSAGE( ${PThreadLib} )
 
@@ -29,7 +31,9 @@ ELSE()
 	FIND_LIBRARY( GLFWLib glfw3dll.lib)
 	MESSAGE( "GLFW need configure!" )
 ENDIF()
-	
+
+SET( GLFWDll ${GLFW_ROOT}/lib-vc2015/glfw3.dll )
+
 MESSAGE( ${GLFWInclude} )
 MESSAGE( ${GLFWLib} )
 
@@ -44,6 +48,14 @@ ELSE()
 	MESSAGE( "LibTiff need configure!" )
 ENDIF()
 
+SET( LibTiffDll 
+	${LIBTIFF_ROOT}/bin/libtiff3.dll 
+	${LIBTIFF_ROOT}/bin/zlib1.dll
+	${LIBTIFF_ROOT}/bin/jpeg62.dll
+	${LIBTIFF_ROOT}/bin/libimage.dll
+	${LIBTIFF_ROOT}/bin/libpng13.dll
+	)
+
 MESSAGE( ${LibTiffInclude} )
 MESSAGE( ${LibTiffLib} )
 
@@ -57,6 +69,8 @@ ELSE()
 	FIND_LIBRARY( AntTweakBarLib AntTweakBar.lib)
 	MESSAGE( "AntTreakBar need configure!" )
 ENDIF()
+
+SET( AntTweakBarDll ${ANTTWEAKBAR_ROOT}/lib/AntTweakBar.dll )
 
 MESSAGE( ${AntTweakBarInclude} )
 MESSAGE( ${AntTweakBarLib} )
@@ -77,6 +91,8 @@ ELSE()
 	FIND_LIBRARY( GLEWLib glew32.lib)
 	MESSAGE( "GLEW need configure!" )
 ENDIF()
+
+SET( GLEWDll ${GLEW_ROOT}/bin/glew32.dll )
 
 MESSAGE( ${GLEWInclude} )
 MESSAGE( ${GLEWLib} )
@@ -105,6 +121,12 @@ ELSE()
 		FIND_LIBRARY( GLUTLib glut32.lib)
 		MESSAGE( "GLUT need configure!" )
 	ENDIF()
+ENDIF()
+
+IF( B_USE_FREEGLUT )
+	SET( GLUTDll ${GLUT_ROOT}/bin/freeglut.dll )
+ELSE()
+	SET( GLUTDll ${GLUT_ROOT}/glut32.dll )
 ENDIF()
 
 MESSAGE( ${GLUTInclude} )
@@ -643,3 +665,14 @@ ADD_SUBDIRECTORY( core/examples/helloworld )
 #ADD_SUBDIRECTORY( ocean )
 #ADD_SUBDIRECTORY( river )
 #ADD_SUBDIRECTORY( terrain )
+
+INSTALL( FILES 
+	${PThreadDll} 
+	${GLFWDll} 
+	${LibTiffDll} 
+	${AntTweakBarDll} 
+	${GLEWDll}
+	${GLUTDll}
+	DESTINATION 
+	${PROJECT_BINARY_DIR}/bin 
+	)
