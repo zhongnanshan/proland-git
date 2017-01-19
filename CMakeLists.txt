@@ -654,15 +654,28 @@ IF( MSVC )
 	TARGET_COMPILE_OPTIONS( demo PRIVATE /wd"4244" /wd"4002" /wd"4305" /wd"4251" /wd"4091" )
 ENDIF( MSVC )
 
-#ADD_SUBDIRECTORY( atmo/examples/atmo )
-#ADD_SUBDIRECTORY( core/examples/helloworld )
+ADD_SUBDIRECTORY( atmo/examples/atmo )
+ADD_SUBDIRECTORY( core/examples/helloworld )
 #ADD_SUBDIRECTORY( demo )
 #ADD_SUBDIRECTORY( edit )
 #ADD_SUBDIRECTORY( forest )
-#ADD_SUBDIRECTORY( graph/examples/graph1 )
+ADD_SUBDIRECTORY( graph/examples/graph1 )
 #ADD_SUBDIRECTORY( ocean )
 #ADD_SUBDIRECTORY( river )
-#ADD_SUBDIRECTORY( terrain/examples/exercise1 )
+ADD_SUBDIRECTORY( terrain/examples/exercise1 )
+
+INSTALL( TARGETS 
+	proland-atmo
+	proland-core
+	proland-edit
+	proland-forest
+	proland-graph
+	proland-ocean
+	proland-river
+	proland-terrain
+	RUNTIME DESTINATION 
+	${PROJECT_BINARY_DIR}/bin
+	)
 
 INSTALL( FILES 
 	${Ork3Dll}
