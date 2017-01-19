@@ -1,19 +1,19 @@
 
 SET( TARGET_NAME core-hello )
-SET( TARGET_SRCS HelloWorld.cpp MyStaticRef.cpp )
+SET( TARGET_SRCS HelloWorld.cpp )
 SET( TARGET_RES helloworld.xml quad.mesh terrainShader.glsl	)
 SET( TARGET_DIR core )
 
 ADD_EXECUTABLE( ${TARGET_NAME} ${TARGET_SRCS})
 
 TARGET_LINK_LIBRARIES( ${TARGET_NAME}
-	proland-core-s
-	proland-graph-s
-	proland-terrain-s
-	proland-atmo-s
-	proland-edit-s
-	proland-forest-s
-	proland-ocean-s
+	proland-core
+	proland-graph
+	proland-terrain
+	proland-atmo
+	proland-edit
+	proland-forest
+	proland-ocean
 	${LibTiffLib}
 	${Ork3Lib}
 	${GLUTLib}
@@ -25,11 +25,8 @@ TARGET_LINK_LIBRARIES( ${TARGET_NAME}
 	)
 
 IF( MSVC )
-	TARGET_COMPILE_OPTIONS( ${TARGET_NAME} PRIVATE 
-	"-DPROLAND_API=" 
-	"-DUSE_MY_ORK_STATIC_REF" 
-	"-DUSE_MY_PROLAND_CORE_STATIC_REF" 
-	)
+	TARGET_COMPILE_OPTIONS( ${TARGET_NAME} PRIVATE "-DPROLAND_API=__declspec(dllimport)" )
+	TARGET_COMPILE_OPTIONS( ${TARGET_NAME} PRIVATE "-DORK_API=__declspec(dllimport)" "-DORK_TEMPLATE_API=" )
 	TARGET_COMPILE_OPTIONS( ${TARGET_NAME} PRIVATE /wd"4244" /wd"4002" /wd"4305" )
 ENDIF( MSVC )
 

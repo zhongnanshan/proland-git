@@ -76,7 +76,7 @@ class TileProducer;
  * @ingroup producer
  * @authors Eric Bruneton, Antoine Begault, Guillaume Piolat
  */
-PROLAND_API class TileCache : public Object
+class PROLAND_API TileCache : public Object
 {
 public:
     /**
@@ -84,7 +84,7 @@ public:
      * describes where the tile is stored in the TileStorage, how its data can
      * be produced, and how many users currently use it.
      */
-    class Tile
+    class PROLAND_API Tile
     {
     public:
         /**

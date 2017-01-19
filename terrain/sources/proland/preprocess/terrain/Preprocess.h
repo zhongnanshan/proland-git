@@ -69,7 +69,7 @@ namespace proland
  * @ingroup preprocess
  * @author Eric Bruneton
  */
-PROLAND_API class InputMap
+class PROLAND_API InputMap
 {
 public:
     /**

@@ -81,14 +81,14 @@ namespace proland
  * @ingroup producer
  * @authors Eric Bruneton, Antoine Begault
  */
-PROLAND_API class TileStorage : public Object
+class PROLAND_API TileStorage : public Object
 {
 public:
     /**
      * A slot managed by a TileStorage. Concrete sub classes of this class must
      * provide a reference to the actual tile data.
      */
-    class Slot
+    class PROLAND_API Slot
     {
     public:
         /**

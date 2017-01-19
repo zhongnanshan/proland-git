@@ -77,6 +77,7 @@ MESSAGE( ${AntTweakBarLib} )
 
 FIND_PATH( Ork3Include ork/core/Object.h)
 FIND_LIBRARY( Ork3Lib Ork31.lib)
+FIND_FILE( Ork3Dll Ork31.dll)
 
 MESSAGE( ${Ork3Include} )
 MESSAGE( ${Ork3Lib} )
@@ -140,7 +141,7 @@ ADD_DEFINITIONS(
 	-DSTBI_NO_WRITE
 	-DHAVE_STRUCT_TIMESPEC
 	-D_CRT_SECURE_NO_WARNINGS
-	-DORK_API=
+#	-DORK_API=
 	${MY_COMPILE_OPTIONS}
 	)
 
@@ -160,7 +161,7 @@ INCLUDE_DIRECTORIES(
 	${GLEWInclude}
 	)
 
-SET( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin )
+#SET( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin )
 
 SET( CORE_SRCS 
 		core/sources/proland/math/color.cpp
@@ -257,25 +258,9 @@ SET( CORE_SRCS
 
 # 生成动态库
 	
-#ADD_LIBRARY( proland-core SHARED ${CORE_SRCS} )
-#TARGET_LINK_LIBRARIES( proland-core 
-#	${AntTweakBarLib} 
-#	${Ork3Lib} 
-#	${PThreadLib} 
-#	${GLEWLib}
-#	opengl32.lib
-#	glu32.lib
-#	)
+ADD_LIBRARY( proland-core SHARED ${CORE_SRCS} )
 
-#IF( MSVC )
-#	TARGET_COMPILE_OPTIONS( proland-core PRIVATE "-DPROLAND_API=__declspec(dllexport)" )
-#	TARGET_COMPILE_OPTIONS( proland-core PRIVATE /wd"4244" /wd"4091" /wd"4002" /wd"4251" )
-#ENDIF( MSVC )
-
-# 生成静态库
-	
-ADD_LIBRARY( proland-core-s STATIC ${CORE_SRCS} )
-TARGET_LINK_LIBRARIES( proland-core-s 
+TARGET_LINK_LIBRARIES( proland-core
 	${AntTweakBarLib} 
 	${Ork3Lib} 
 	${PThreadLib} 
@@ -285,8 +270,9 @@ TARGET_LINK_LIBRARIES( proland-core-s
 	)
 
 IF( MSVC )
-	TARGET_COMPILE_OPTIONS( proland-core-s PRIVATE "-DPROLAND_API=" )
-	TARGET_COMPILE_OPTIONS( proland-core-s PRIVATE /wd"4244" /wd"4091" /wd"4002" /wd"4251" )
+	TARGET_COMPILE_OPTIONS( proland-core PRIVATE "-DPROLAND_API=__declspec(dllexport)" )
+	TARGET_COMPILE_OPTIONS( proland-core PRIVATE "-DORK_API=__declspec(dllimport)" "-DORK_TEMPLATE_API=" )
+	TARGET_COMPILE_OPTIONS( proland-core PRIVATE /wd"4244" /wd"4091" /wd"4002" /wd"4251" )
 ENDIF( MSVC )
 
 SET( ATMO_SRCS 
@@ -294,9 +280,9 @@ SET( ATMO_SRCS
 		atmo/sources/proland/preprocess/atmo/PreprocessAtmo.h
 	)
 
-ADD_LIBRARY( proland-atmo-s STATIC ${ATMO_SRCS} )
+ADD_LIBRARY( proland-atmo SHARED ${ATMO_SRCS} )
 
-TARGET_LINK_LIBRARIES( proland-atmo-s 
+TARGET_LINK_LIBRARIES( proland-atmo
 	${Ork3Lib}
 	${GLEWLib}
 	${PThreadLib}
@@ -306,8 +292,9 @@ TARGET_LINK_LIBRARIES( proland-atmo-s
 	)
 
 IF( MSVC )
-	TARGET_COMPILE_OPTIONS( proland-atmo-s PRIVATE "-DPROLAND_API=" )
-	TARGET_COMPILE_OPTIONS( proland-atmo-s PRIVATE /wd"4244" /wd"4305" )
+	TARGET_COMPILE_OPTIONS( proland-atmo PRIVATE "-DPROLAND_API=__declspec(dllexport)" )
+	TARGET_COMPILE_OPTIONS( proland-atmo PRIVATE "-DORK_API=__declspec(dllimport)" "-DORK_TEMPLATE_API=" )
+	TARGET_COMPILE_OPTIONS( proland-atmo PRIVATE /wd"4244" /wd"4305" /wd"4251" /wd"4091" )
 ENDIF( MSVC )
 
 SET( EDIT_SRCS
@@ -339,10 +326,13 @@ SET( EDIT_SRCS
 		edit/sources/proland/ui/twbar/TweakRivers.h
 	)
 
-ADD_LIBRARY( proland-edit-s STATIC ${EDIT_SRCS} )
+ADD_LIBRARY( proland-edit SHARED ${EDIT_SRCS} )
 
-TARGET_LINK_LIBRARIES( proland-edit-s 
-	proland-core-s
+TARGET_LINK_LIBRARIES( proland-edit 
+	proland-core
+	proland-terrain
+	proland-graph
+	proland-river
 	${AntTweakBarLib} 
 	${Ork3Lib}
 #	${GLEWLib}
@@ -353,8 +343,9 @@ TARGET_LINK_LIBRARIES( proland-edit-s
 	)
 
 IF( MSVC )
-	TARGET_COMPILE_OPTIONS( proland-edit-s PRIVATE "-DPROLAND_API=" )
-	TARGET_COMPILE_OPTIONS( proland-edit-s PRIVATE /wd"4091" /wd"4002" /wd"4244" )
+	TARGET_COMPILE_OPTIONS( proland-edit PRIVATE "-DPROLAND_API=__declspec(dllexport)" )
+	TARGET_COMPILE_OPTIONS( proland-edit PRIVATE "-DORK_API=__declspec(dllimport)" "-DORK_TEMPLATE_API=" )
+	TARGET_COMPILE_OPTIONS( proland-edit PRIVATE /wd"4091" /wd"4002" /wd"4244" /wd"4251" /wd"4275" )
 ENDIF( MSVC )
 
 SET( FOREST_SRCS
@@ -375,12 +366,12 @@ SET( FOREST_SRCS
 		forest/sources/proland/preprocess/trees/PreprocessTreeTables.cpp
 	)
 
-ADD_LIBRARY( proland-forest-s STATIC ${FOREST_SRCS} )
+ADD_LIBRARY( proland-forest SHARED ${FOREST_SRCS} )
 
-TARGET_INCLUDE_DIRECTORIES( proland-forest-s PRIVATE ${LibTiffInclude} )
+TARGET_INCLUDE_DIRECTORIES( proland-forest PRIVATE ${LibTiffInclude} )
 
-TARGET_LINK_LIBRARIES( proland-forest-s 
-	proland-core-s
+TARGET_LINK_LIBRARIES( proland-forest 
+	proland-core
 	${LibTiffLib}
 	${Ork3Lib}
 	${GLUTLib}
@@ -392,8 +383,9 @@ TARGET_LINK_LIBRARIES( proland-forest-s
 	)
 
 IF( MSVC )
-	TARGET_COMPILE_OPTIONS( proland-forest-s PRIVATE "-DPROLAND_API=" )
-	TARGET_COMPILE_OPTIONS( proland-forest-s PRIVATE /wd"4091" /wd"4244" /wd"4002" /wd"4305" )
+	TARGET_COMPILE_OPTIONS( proland-forest PRIVATE "-DPROLAND_API=__declspec(dllexport)" )
+	TARGET_COMPILE_OPTIONS( proland-forest PRIVATE "-DORK_API=__declspec(dllimport)" "-DORK_TEMPLATE_API=" )
+	TARGET_COMPILE_OPTIONS( proland-forest PRIVATE /wd"4091" /wd"4244" /wd"4002" /wd"4305" /wd"4251" )
 ENDIF( MSVC )
 
 SET( GRAPH_SRCS
@@ -470,10 +462,11 @@ SET( GRAPH_SRCS
 		graph/sources/proland/ortho/WaterOrthoLayer.h
 	)
 
-ADD_LIBRARY( proland-graph-s STATIC ${GRAPH_SRCS} )
+ADD_LIBRARY( proland-graph SHARED ${GRAPH_SRCS} )
 
-TARGET_LINK_LIBRARIES( proland-graph-s 
-	proland-core-s
+TARGET_LINK_LIBRARIES( proland-graph 
+	proland-core
+	proland-terrain
 #	${LibTiffLib}
 	${Ork3Lib}
 #	${GLUTLib}
@@ -485,10 +478,11 @@ TARGET_LINK_LIBRARIES( proland-graph-s
 	)
 
 IF( MSVC )
-	TARGET_COMPILE_OPTIONS( proland-graph-s PRIVATE "-DPROLAND_API=" )
-	TARGET_COMPILE_OPTIONS( proland-graph-s PRIVATE /wd"4244" /wd"4002" )
+	TARGET_COMPILE_OPTIONS( proland-graph PRIVATE "-DPROLAND_API=__declspec(dllexport)" )
+	TARGET_COMPILE_OPTIONS( proland-graph PRIVATE "-DORK_API=__declspec(dllimport)" "-DORK_TEMPLATE_API=" )
+	TARGET_COMPILE_OPTIONS( proland-graph PRIVATE /wd"4244" /wd"4002" /wd"4251" /wd"4091" )
 ENDIF( MSVC )
-	
+
 SET( OCEAN_SRCS
 		ocean/sources/proland/OceanPlugin.cpp
 		ocean/sources/proland/OceanPlugin.h
@@ -498,23 +492,24 @@ SET( OCEAN_SRCS
 		ocean/sources/proland/ocean/DrawOceanTask.h
 	)
 
-ADD_LIBRARY( proland-ocean-s STATIC ${OCEAN_SRCS} )
+ADD_LIBRARY( proland-ocean SHARED ${OCEAN_SRCS} )
 
-TARGET_LINK_LIBRARIES( proland-ocean-s 
-	proland-core-s
+TARGET_LINK_LIBRARIES( proland-ocean 
+	proland-core
 #	${LibTiffLib}
 	${Ork3Lib}
 #	${GLUTLib}
 #	${AntTweakBarLib} 
 #	${GLEWLib}
 	${PThreadLib}
-#	opengl32.lib
-#	glu32.lib
+	opengl32.lib
+	glu32.lib
 	)
 
 IF( MSVC )
-	TARGET_COMPILE_OPTIONS( proland-ocean-s PRIVATE "-DPROLAND_API=" )
-	TARGET_COMPILE_OPTIONS( proland-ocean-s PRIVATE /wd"4244" /wd"4002" /wd"4305" )
+	TARGET_COMPILE_OPTIONS( proland-ocean PRIVATE "-DPROLAND_API=__declspec(dllexport)" )
+	TARGET_COMPILE_OPTIONS( proland-ocean PRIVATE "-DORK_API=__declspec(dllimport)" "-DORK_TEMPLATE_API=" )
+	TARGET_COMPILE_OPTIONS( proland-ocean PRIVATE /wd"4244" /wd"4002" /wd"4305" /wd"4251" /wd"4091" )
 ENDIF( MSVC )
 
 SET( TERRAIN_SRCS
@@ -552,12 +547,12 @@ SET( TERRAIN_SRCS
 		terrain/sources/proland/preprocess/terrain/Util.h
 	) 
 
-ADD_LIBRARY( proland-terrain-s STATIC ${TERRAIN_SRCS} )
+ADD_LIBRARY( proland-terrain SHARED ${TERRAIN_SRCS} )
 
-TARGET_INCLUDE_DIRECTORIES( proland-terrain-s PRIVATE ${LibTiffInclude} )
+TARGET_INCLUDE_DIRECTORIES( proland-terrain PRIVATE ${LibTiffInclude} )
 
-TARGET_LINK_LIBRARIES( proland-terrain-s 
-	proland-core-s
+TARGET_LINK_LIBRARIES( proland-terrain 
+	proland-core
 	${LibTiffLib}
 	${Ork3Lib}
 #	${GLUTLib}
@@ -569,8 +564,9 @@ TARGET_LINK_LIBRARIES( proland-terrain-s
 	)
 
 IF( MSVC )
-	TARGET_COMPILE_OPTIONS( proland-terrain-s PRIVATE "-DPROLAND_API=" )
-	TARGET_COMPILE_OPTIONS( proland-terrain-s PRIVATE /wd"4244" /wd"4002" /wd"4305" )
+	TARGET_COMPILE_OPTIONS( proland-terrain PRIVATE "-DPROLAND_API=__declspec(dllexport)" )
+	TARGET_COMPILE_OPTIONS( proland-terrain PRIVATE "-DORK_API=__declspec(dllimport)" "-DORK_TEMPLATE_API=" )
+	TARGET_COMPILE_OPTIONS( proland-terrain PRIVATE /wd"4244" /wd"4002" /wd"4305" /wd"4251" /wd"4091" )
 ENDIF( MSVC )
 
 SET( RIVER_SRCS
@@ -606,12 +602,12 @@ SET( RIVER_SRCS
 		river/sources/proland/ui/twbar/TweakRivers.h
 	)
 
-ADD_LIBRARY( proland-river-s STATIC ${RIVER_SRCS} )
+ADD_LIBRARY( proland-river SHARED ${RIVER_SRCS} )
 
-TARGET_LINK_LIBRARIES( proland-river-s 
-	proland-core-s
-	proland-graph-s
-	proland-terrain-s
+TARGET_LINK_LIBRARIES( proland-river 
+	proland-core
+	proland-graph
+	proland-terrain
 #	${LibTiffLib}
 	${Ork3Lib}
 #	${GLUTLib}
@@ -625,8 +621,9 @@ TARGET_LINK_LIBRARIES( proland-river-s
 #TARGET_INCLUDE_DIRECTORIES( proland-river-s PRIVATE ${GLEWInclude} )
 
 IF( MSVC )
-	TARGET_COMPILE_OPTIONS( proland-river-s PRIVATE "-DPROLAND_API=" )
-	TARGET_COMPILE_OPTIONS( proland-river-s PRIVATE /wd"4244" /wd"4002" /wd"4305" )
+	TARGET_COMPILE_OPTIONS( proland-river PRIVATE "-DPROLAND_API=__declspec(dllexport)" )
+	TARGET_COMPILE_OPTIONS( proland-river PRIVATE "-DORK_API=__declspec(dllimport)" "-DORK_TEMPLATE_API=" )
+	TARGET_COMPILE_OPTIONS( proland-river PRIVATE /wd"4244" /wd"4002" /wd"4305" /wd"4251" /wd"4091" )
 ENDIF( MSVC )
 
 ADD_EXECUTABLE( demo demo/ProlandDemo.cpp )
@@ -634,13 +631,13 @@ ADD_EXECUTABLE( demo demo/ProlandDemo.cpp )
 TARGET_INCLUDE_DIRECTORIES( demo PRIVATE ${LibTiffInclude} )
 
 TARGET_LINK_LIBRARIES( demo 
-	proland-core-s
-	proland-graph-s
-	proland-terrain-s
-	proland-atmo-s
-	proland-edit-s
-	proland-forest-s
-	proland-ocean-s
+	proland-core
+	proland-graph
+	proland-terrain
+	proland-atmo
+	proland-edit
+	proland-forest
+	proland-ocean
 #	${LibTiffLib}
 	${Ork3Lib}
 	${GLUTLib}
@@ -652,21 +649,23 @@ TARGET_LINK_LIBRARIES( demo
 	)
 
 IF( MSVC )
-	TARGET_COMPILE_OPTIONS( demo PRIVATE "-DPROLAND_API=" )
-	TARGET_COMPILE_OPTIONS( demo PRIVATE /wd"4244" /wd"4002" /wd"4305" )
+	TARGET_COMPILE_OPTIONS( demo PRIVATE "-DPROLAND_API=__declspec(dllimport)" )
+	TARGET_COMPILE_OPTIONS( demo PRIVATE "-DORK_API=__declspec(dllimport)" "-DORK_TEMPLATE_API=" )
+	TARGET_COMPILE_OPTIONS( demo PRIVATE /wd"4244" /wd"4002" /wd"4305" /wd"4251" /wd"4091" )
 ENDIF( MSVC )
 
-ADD_SUBDIRECTORY( atmo/examples/atmo )
-ADD_SUBDIRECTORY( core/examples/helloworld )
+#ADD_SUBDIRECTORY( atmo/examples/atmo )
+#ADD_SUBDIRECTORY( core/examples/helloworld )
 #ADD_SUBDIRECTORY( demo )
 #ADD_SUBDIRECTORY( edit )
 #ADD_SUBDIRECTORY( forest )
-ADD_SUBDIRECTORY( graph/examples/graph1 )
+#ADD_SUBDIRECTORY( graph/examples/graph1 )
 #ADD_SUBDIRECTORY( ocean )
 #ADD_SUBDIRECTORY( river )
-ADD_SUBDIRECTORY( terrain/examples/exercise1 )
+#ADD_SUBDIRECTORY( terrain/examples/exercise1 )
 
 INSTALL( FILES 
+	${Ork3Dll}
 	${PThreadDll} 
 	${GLFWDll} 
 	${LibTiffDll} 

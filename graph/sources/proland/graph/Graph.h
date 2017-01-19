@@ -196,7 +196,7 @@ inline bool operator ==(const GraphId &u, const GraphId &v)
  * @ingroup graph
  * @author Antoine Begault, Guillaume Piolat
  */
-PROLAND_API class Graph : public Object
+class PROLAND_API Graph : public Object
 {
 public:
     /**
@@ -238,7 +238,7 @@ public:
      * created when a Graph is modified, and they are used in #clipUpdate
      * to update a clipped graph incrementally, without doing a full #clip.
      */
-    struct Changes
+    struct PROLAND_API Changes
     {
         list<AreaId> changedArea;
 

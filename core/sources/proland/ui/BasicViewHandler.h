@@ -58,7 +58,7 @@ namespace proland
  * @ingroup proland_ui
  * @authors Eric Bruneton, Antoine Begault, Guillaume Piolat
  */
-PROLAND_API class ViewManager
+class PROLAND_API ViewManager
 {
 public:
     /**
@@ -95,13 +95,13 @@ public:
  * and to start an animation to go smoothly from one position to another.
  * @ingroup proland_ui
  */
-PROLAND_API class BasicViewHandler : public EventHandler
+class PROLAND_API BasicViewHandler : public EventHandler
 {
 public:
     /**
      * A TerrainViewController position and a light source position.
      */
-    struct Position {
+    struct PROLAND_API Position {
 
         double x0, y0, theta, phi, d, sx, sy, sz;
 
