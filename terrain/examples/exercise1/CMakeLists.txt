@@ -18,7 +18,7 @@ SET( TARGET_RES
 	text.png
 	sunglare.png
 	)
-SET( TARGET_DIR terrain-exercise1 )
+SET( TARGET_DIR ${TARGET_NAME} )
 
 ADD_EXECUTABLE( ${TARGET_NAME} ${TARGET_SRCS})
 

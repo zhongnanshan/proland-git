@@ -663,6 +663,8 @@ ADD_SUBDIRECTORY( graph/examples/graph1 )
 #ADD_SUBDIRECTORY( ocean )
 #ADD_SUBDIRECTORY( river )
 ADD_SUBDIRECTORY( terrain/examples/exercise1 )
+ADD_SUBDIRECTORY( terrain/examples/exercise2 )
+ADD_SUBDIRECTORY( terrain/examples/exercise3 )
 
 INSTALL( TARGETS 
 	proland-atmo

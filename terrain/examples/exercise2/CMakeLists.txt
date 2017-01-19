@@ -1,21 +1,7 @@
 
-SET( TARGET_NAME atmo )
-SET( TARGET_SRCS HelloWorld.cpp )
-SET( TARGET_RES 
-	atmosphereShader.glhl
-	atmosphereShader.glsl
-	globalsShader.glsl
-	skyShader.glsl
-	textShader.glsl
-	square.mesh
-	sunglare.png
-	text.png
-	inscatter.raw
-	irradiance.raw
-	transmittance.raw
-	helloworld.xml
-	)
+SET( TARGET_NAME terrain-exercise2 )
 SET( TARGET_DIR ${TARGET_NAME} )
+SET( TARGET_SRCS HelloWorld.cpp )
 
 ADD_EXECUTABLE( ${TARGET_NAME} ${TARGET_SRCS})
 
@@ -45,7 +31,13 @@ ENDIF( MSVC )
 
 INSTALL( TARGETS ${TARGET_NAME} RUNTIME DESTINATION ${PROJECT_BINARY_DIR}/bin/${TARGET_DIR} )
 
-INSTALL( FILES ${TARGET_RES} DESTINATION ${PROJECT_BINARY_DIR}/bin/${TARGET_DIR} )
+#INSTALL( FILES ${TARGET_RES} DESTINATION ${PROJECT_BINARY_DIR}/bin/${TARGET_DIR} )
+INSTALL( DIRECTORY ./ DESTINATION ${PROJECT_BINARY_DIR}/bin/${TARGET_DIR}
+	PATTERN "*.cpp" EXCLUDE
+	PATTERN "*.cbp" EXCLUDE
+	PATTERN "*.bat" EXCLUDE
+	PATTERN "CMakeLists.txt" EXCLUDE
+	)
 
 FILE( WRITE 
 	${PROJECT_BINARY_DIR}/bin/${TARGET_DIR}/${TARGET_NAME}-run.bat
