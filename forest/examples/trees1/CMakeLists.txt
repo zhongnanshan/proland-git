@@ -1,5 +1,5 @@
 
-SET( TARGET_NAME terrain-exercise2 )
+SET( TARGET_NAME forest-trees1 )
 SET( TARGET_DIR ${TARGET_NAME} )
 SET( TARGET_SRCS HelloWorld.cpp )
 

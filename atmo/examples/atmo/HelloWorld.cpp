@@ -247,7 +247,7 @@ static ResourceFactory::Type<helloworld, HelloWorldResource> HelloWorldType;
 
 static_ptr<Window> app;
 
-void precompute();
+//void precompute();
 
 void init()
 {
