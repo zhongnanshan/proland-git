@@ -46,6 +46,10 @@
 #include "proland/preprocess/terrain/ColorMipmap.h"
 #include "proland/util/mfs.h"
 
+#ifdef DEF_C99_MATH
+#include "def_c99_math.h"
+#endif
+
 namespace proland
 {
 

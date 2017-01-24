@@ -48,6 +48,10 @@
 #include "proland/preprocess/terrain/Util.h"
 #include "proland/util/mfs.h"
 
+#ifdef DEF_C99_MATH
+#include "def_c99_math.h"
+#endif
+
 #define RESIDUAL_STEPS 2
 
 namespace proland

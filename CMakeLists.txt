@@ -162,6 +162,21 @@ INCLUDE_DIRECTORIES(
 	${GLEWInclude}
 	)
 
+OPTION( DEF_C99_MATH "define c99 math round and roundf library functions.(need under vs2012)" OFF )
+IF( DEF_C99_MATH )
+FILE( WRITE 
+	${PROJECT_BINARY_DIR}/def_c99_math.h
+	"#include <cmath>\n"
+	"\n"
+	"inline float roundf(float num)\n"
+	"{\n"
+	"    return num > 0 ? std::floor(num + 0.5f) : std::ceil(num - 0.5f);\n"
+	"}\n"
+	)
+ADD_DEFINITIONS( -DDEF_C99_MATH )
+INCLUDE_DIRECTORIES( ${PROJECT_BINARY_DIR} )
+ENDIF()
+
 #SET( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin )
 
 SET( CORE_SRCS 
@@ -627,34 +642,35 @@ IF( MSVC )
 	TARGET_COMPILE_OPTIONS( proland-river PRIVATE /wd"4244" /wd"4002" /wd"4305" /wd"4251" /wd"4091" )
 ENDIF( MSVC )
 
-ADD_EXECUTABLE( demo demo/ProlandDemo.cpp )
+#ADD_EXECUTABLE( demo demo/ProlandDemo.cpp )
 
-TARGET_INCLUDE_DIRECTORIES( demo PRIVATE ${LibTiffInclude} )
+#TARGET_INCLUDE_DIRECTORIES( demo PRIVATE ${LibTiffInclude} )
 
-TARGET_LINK_LIBRARIES( demo 
-	proland-core
-	proland-graph
-	proland-terrain
-	proland-atmo
-	proland-edit
-	proland-forest
-	proland-ocean
+#TARGET_LINK_LIBRARIES( demo 
+#	proland-core
+#	proland-graph
+#	proland-terrain
+#	proland-atmo
+#	proland-edit
+#	proland-forest
+#	proland-ocean
 #	${LibTiffLib}
-	${Ork3Lib}
-	${GLUTLib}
+#	${Ork3Lib}
+#	${GLUTLib}
 #	${AntTweakBarLib} 
 #	${GLEWLib}
-	${PThreadLib}
-	opengl32.lib
-	glu32.lib
-	)
+#	${PThreadLib}
+#	opengl32.lib
+#	glu32.lib
+#	)
 
-IF( MSVC )
-	TARGET_COMPILE_OPTIONS( demo PRIVATE "-DPROLAND_API=__declspec(dllimport)" )
-	TARGET_COMPILE_OPTIONS( demo PRIVATE "-DORK_API=__declspec(dllimport)" "-DORK_TEMPLATE_API=" )
-	TARGET_COMPILE_OPTIONS( demo PRIVATE /wd"4244" /wd"4002" /wd"4305" /wd"4251" /wd"4091" )
-ENDIF( MSVC )
+#IF( MSVC )
+#	TARGET_COMPILE_OPTIONS( demo PRIVATE "-DPROLAND_API=__declspec(dllimport)" )
+#	TARGET_COMPILE_OPTIONS( demo PRIVATE "-DORK_API=__declspec(dllimport)" "-DORK_TEMPLATE_API=" )
+#	TARGET_COMPILE_OPTIONS( demo PRIVATE /wd"4244" /wd"4002" /wd"4305" /wd"4251" /wd"4091" )
+#ENDIF( MSVC )
 
+ADD_SUBDIRECTORY( demo )
 ADD_SUBDIRECTORY( atmo/examples/atmo )
 ADD_SUBDIRECTORY( core/examples/helloworld )
 ADD_SUBDIRECTORY( edit/examples/edit1 )
